@@ -1,4 +1,5 @@
 import Creators from "../abi/Creators.json";
+import Creator from "../abi/Creator.json";
 import { CREATORS_CONTRACT_ADDRESS } from "@env";
 import Web3 from "web3";
 
@@ -16,7 +17,7 @@ export const isUserRegistered = async (account) => {
 	return result;
 };
 
-export const registerUser = async (creatorObj) => {
+export const registerUser = async (connector, creatorObj) => {
 	const creatorsContract = new web3.eth.Contract(
 		Creators.abi,
 		CREATORS_CONTRACT_ADDRESS
@@ -31,30 +32,37 @@ export const registerUser = async (creatorObj) => {
 		nftCollectionSymbol,
 	} = creatorObj;
 
-	let txObject = await creatorsContract.methods.registerUser(
-		username,
-		name,
-		bio,
-		profilePicUrl,
-		nftCollectionName,
-		nftCollectionSymbol
-	);
+	let txData = await creatorsContract.methods
+		.registerUser(
+			username,
+			name,
+			bio,
+			profilePicUrl,
+			nftCollectionName,
+			nftCollectionSymbol
+		)
+		.encodeABI();
 
-	console.log(creatorObj);
+	let tx = await connector.sendTransaction({
+		from: connector.accounts[0],
+		to: CREATORS_CONTRACT_ADDRESS,
+		data: txData,
+	});
+
+	let receipt = await tx.wait();
+	console.log(receipt);
 };
 
-export const getCreatorAddressBySender = async () => {
+export const getCreatorAddressByAddress = async (account) => {
 	const creatorsContract = new web3.eth.Contract(
 		Creators.abi,
 		CREATORS_CONTRACT_ADDRESS
 	);
-
 	let result = await creatorsContract.methods
-		.getCreatorAddressBySender()
+		.getCreatorAddressByAddress(account)
 		.call();
 	return result;
 };
-
 export const getCreatorObjFromAddress = async (contractAddress) => {
 	const creatorContract = new web3.eth.Contract(Creator.abi, contractAddress);
 

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { Linking } from "react-native";
 
 export const AccountContext = React.createContext(null);
 
