@@ -1,14 +1,8 @@
 import { Text } from "react-native";
 import React, { useContext } from "react";
-import AccountContextProvider, {
-	AccountContext,
-} from "./context/AccountContext";
-import ConnectWalletScreen from "./screens/ConnectWallet";
+import ConnectWallet from "./screens/ConnectWallet";
+import { AccountContext } from "./context/AccountContext";
 
 export default function App() {
-	return (
-		<AccountContextProvider>
-			<ConnectWalletScreen />
-		</AccountContextProvider>
-	);
+	return <ConnectWallet />;
 }
