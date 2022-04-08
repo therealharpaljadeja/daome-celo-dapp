@@ -10,6 +10,9 @@ import { CreatorsContext } from "./context/CreatorsContext";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/AntDesign";
+import FeedScreen from "./screens/Feed";
+import ProfileScreen from "./screens/Profile";
+import SettingsScreen from "./screens/Settings";
 
 const BottomTabs = createBottomTabNavigator();
 
@@ -20,7 +23,7 @@ export default function App() {
 	const { creator } = useContext(CreatorsContext);
 
 	return (
-		<SafeAreaView style={tw`flex-1 justify-center items-center`}>
+		<>
 			{account ? (
 				<>
 					{checkingIfUserRegistered ? (
@@ -66,23 +69,15 @@ export default function App() {
 											})}>
 											<BottomTabs.Screen
 												name='Feed'
-												component={() => {
-													return (
-														<Text>Feed Screen</Text>
-													);
-												}}
+												component={FeedScreen}
 											/>
 											<BottomTabs.Screen
 												name='Profile'
-												component={() => (
-													<Text>Profile Screen</Text>
-												)}
+												component={ProfileScreen}
 											/>
 											<BottomTabs.Screen
 												name='Settings'
-												component={() => (
-													<Text>Settings Screen</Text>
-												)}
+												component={SettingsScreen}
 											/>
 										</BottomTabs.Navigator>
 									</NavigationContainer>
@@ -92,8 +87,10 @@ export default function App() {
 					)}
 				</>
 			) : (
-				<ConnectWallet />
+				<SafeAreaView style={tw`flex-1 justify-center items-center`}>
+					<ConnectWallet />
+				</SafeAreaView>
 			)}
-		</SafeAreaView>
+		</>
 	);
 }

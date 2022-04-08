@@ -9,7 +9,7 @@ import { UserContext } from "./UserContext";
 
 export const CreatorsContext = React.createContext(null);
 
-export default function CreatorContextProvider({ children }) {
+export default function CreatorsContextProvider({ children }) {
 	const [creator, setCreator] = useState(null);
 	const { connector, account } = useContext(AccountContext);
 	const { userRegistered } = useContext(UserContext);

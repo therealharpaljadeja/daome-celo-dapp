@@ -5,6 +5,8 @@ module.exports = {
 		extraNodeModules: {
 			crypto,
 			url,
+			zlib: require.resolve("browserify-zlib"),
+			tty: require.resolve("tty-browserify"),
 			fs: require.resolve("expo-file-system"),
 			http: require.resolve("stream-http"),
 			https: require.resolve("https-browserify"),
