@@ -7,6 +7,8 @@ export const UserContext = React.createContext(null);
 export default function UserContextProvider({ children }) {
 	const { account, connector, setAccount } = useContext(AccountContext);
 	const [userRegistered, setUserRegistered] = useState(null);
+	const [checkingIfUserRegistered, setCheckingIfUserRegistered] =
+		useState(false);
 
 	useEffect(async () => {
 		if (connector.connected) {
@@ -18,8 +20,10 @@ export default function UserContextProvider({ children }) {
 
 	useEffect(async () => {
 		if (account) {
+			setCheckingIfUserRegistered(true);
 			let result = await checkIfUserRegistered(account);
 			setUserRegistered(result);
+			setCheckingIfUserRegistered(false);
 		}
 	}, [account]);
 
@@ -33,6 +37,7 @@ export default function UserContextProvider({ children }) {
 			value={{
 				checkIfUserRegistered,
 				userRegistered,
+				checkingIfUserRegistered,
 			}}>
 			{children}
 		</UserContext.Provider>
