@@ -6,10 +6,10 @@ import Web3 from "web3";
 
 const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
 
-export const balanceOf = async (kit, creatorAddress) => {
-	let collectionAddress = getNFTCollectionAddress(creatorAddress);
+export const balanceOf = async (account, creatorAddress) => {
+	let collectionAddress = await getNFTCollectionAddress(creatorAddress);
 	let nftContract = new web3.eth.Contract(NFT.abi, collectionAddress);
-	let result = await nftContract.methods.balanceOf(kit.defaultAccount);
+	let result = await nftContract.methods.balanceOf(account).call();
 	return result;
 };
 
@@ -19,9 +19,9 @@ export const mintNFT = async (
 	tokenURI,
 	royaltyPercentage
 ) => {
-	console.log(tokenURI);
 	let collectionAddress = await getNFTCollectionAddress(creatorAddress);
 	let nftContract = new web3.eth.Contract(NFT.abi, collectionAddress);
+	console.log(tokenURI, royaltyPercentage);
 	let txObject = await nftContract.methods
 		.createToken(tokenURI, royaltyPercentage)
 		.encodeABI();
@@ -29,21 +29,17 @@ export const mintNFT = async (
 	let receipt = await connector.sendTransaction({
 		from: connector.accounts[0],
 		to: collectionAddress,
-		txData: txObject,
+		data: txObject.toString(),
 	});
 
-	console.log(receipt);
-	// console.log(txObject);
-	// return txObject;
+	return receipt;
 };
 
-export const tokenOwnedByUser = async (creatorAddress) => {
-	const ownerAddress = kit.defaultAccount;
-
+export const tokenOwnedByUser = async (account, creatorAddress) => {
+	const ownerAddress = account;
 	let collectionAddress = await getNFTCollectionAddress(creatorAddress);
-
 	let nftContract = new web3.eth.Contract(NFT.abi, collectionAddress);
-	let balanceOfOwner = await balanceOf(kit, creatorAddress);
+	let balanceOfOwner = await balanceOf(account, creatorAddress);
 	let nfts = [];
 	for (let i = 0; i < balanceOfOwner; i++) {
 		let tokenId = await nftContract.methods
@@ -52,16 +48,11 @@ export const tokenOwnedByUser = async (creatorAddress) => {
 		let tokenURI = await nftContract.methods.tokenURI(tokenId).call();
 		let response = await axios.get(tokenURI);
 		const { name, description } = response.data;
-		let ImageUrlSplit = response.data.image.split("/", 4);
-		let imageUrl = `https://ipfs.io/ipfs/${
-			ImageUrlSplit[ImageUrlSplit.length - 2] +
-			"/" +
-			ImageUrlSplit[ImageUrlSplit.length - 1]
-		}`;
+		let imageSrc = response.data.image;
 		let nft = {
 			name,
 			description,
-			image: imageUrl,
+			image: imageSrc,
 			collectionAddress,
 			creatorAddress,
 			tokenId,

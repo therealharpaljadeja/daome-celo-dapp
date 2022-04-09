@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 	textInput: tw`border-gray-200 border-2 rounded-md my-1 px-2`,
 	modalOverlay: tw`p-5 justify-center flex-1 bg-gray-500/50`,
 	modal: tw`bg-white p-3 flex-1 justify-center`,
-	button: tw`bg-purple-500 py-4 rounded-md`,
+	button: tw`bg-purple-500 py-4 rounded-md mb-2`,
 	image: tw`rounded-full w-25 h-25 self-center mb-10`,
 });
 
@@ -44,7 +44,7 @@ const settingsReducer = (state, action) => {
 };
 
 export function SettingsForm() {
-	const { account } = useContext(AccountContext);
+	const { account, connector } = useContext(AccountContext);
 	const { creator } = useContext(CreatorsContext);
 
 	const initialState = {
@@ -65,6 +65,10 @@ export function SettingsForm() {
 		if (image) {
 			dispatch({ type: "PFP_URL", payload: image });
 		}
+	}
+
+	async function disconnect() {
+		connector.killSession();
 	}
 
 	const [state, dispatch] = useReducer(settingsReducer, initialState);
@@ -137,6 +141,16 @@ export function SettingsForm() {
 						color: "white",
 					}}>
 					Save
+				</Text>
+			</TouchableOpacity>
+			<TouchableOpacity onPress={disconnect} style={styles.button}>
+				<Text
+					style={{
+						textAlign: "center",
+						fontSize: 16,
+						color: "white",
+					}}>
+					Disconnect
 				</Text>
 			</TouchableOpacity>
 		</View>

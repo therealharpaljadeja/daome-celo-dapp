@@ -11,12 +11,14 @@ export const CreatorsContext = React.createContext(null);
 
 export default function CreatorsContextProvider({ children }) {
 	const [creator, setCreator] = useState(null);
+	const [creatorAddress, setCreatorAddress] = useState(null);
 	const { connector, account } = useContext(AccountContext);
 	const { userRegistered } = useContext(UserContext);
 
 	useEffect(async () => {
 		if (userRegistered) {
 			let creatorAddress = await getCreatorAddressByAddress(account);
+			setCreatorAddress(creatorAddress);
 			setCreator(await getCreatorObjFromAddress(creatorAddress));
 		}
 	}, [userRegistered]);
@@ -30,6 +32,7 @@ export default function CreatorsContextProvider({ children }) {
 			value={{
 				registerUser,
 				creator,
+				creatorAddress,
 			}}>
 			{children}
 		</CreatorsContext.Provider>

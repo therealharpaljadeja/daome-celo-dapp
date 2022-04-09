@@ -43,13 +43,12 @@ export const registerUser = async (connector, creatorObj) => {
 		)
 		.encodeABI();
 
-	let tx = await connector.sendTransaction({
+	let receipt = await connector.sendTransaction({
 		from: connector.accounts[0],
 		to: CREATORS_CONTRACT_ADDRESS,
 		data: txData,
 	});
 
-	let receipt = await tx.wait();
 	console.log(receipt);
 };
 

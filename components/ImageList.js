@@ -1,6 +1,15 @@
 import tw from "twrnc";
-import { FlatList, Image, View, useWindowDimensions } from "react-native";
+import { useContext } from "react";
+import {
+	FlatList,
+	Image,
+	View,
+	useWindowDimensions,
+	ActivityIndicator,
+} from "react-native";
+import { CreatorContext } from "../context/CreatorContext";
 export default function ImageList() {
+	const { loadingNFT, currentUserNFTs } = useContext(CreatorContext);
 	const window = useWindowDimensions();
 	let images = [
 		"https://bit.ly/dan-abramov",
@@ -12,22 +21,31 @@ export default function ImageList() {
 	];
 	return (
 		<>
-			<FlatList
-				numColumns={3}
-				data={images}
-				keyExtractor={(item, index) => index.toString()}
-				renderItem={({ item }) => {
-					return (
-						<Image
-							style={{
-								width: window.width / 3,
-								aspectRatio: 1,
-							}}
-							source={{ uri: item }}
-						/>
-					);
-				}}
-			/>
+			{loadingNFT ? (
+				<ActivityIndicator
+					animating={true}
+					size='small'
+					style={tw`py-4`}
+					color='#a855f7'
+				/>
+			) : (
+				<FlatList
+					numColumns={3}
+					data={currentUserNFTs}
+					keyExtractor={(item, index) => index.toString()}
+					renderItem={({ item }) => {
+						return (
+							<Image
+								style={{
+									width: window.width / 3,
+									aspectRatio: 1,
+								}}
+								source={{ uri: item.image }}
+							/>
+						);
+					}}
+				/>
+			)}
 
 			{/* <View style={{}}>
 				<View

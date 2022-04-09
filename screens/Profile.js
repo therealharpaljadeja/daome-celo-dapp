@@ -7,12 +7,12 @@ import {
 	TouchableOpacity,
 } from "react-native";
 import tw from "twrnc";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ImageList from "../components/ImageList";
 import { CreatorsContext } from "../context/CreatorsContext";
+import { CreatorContext } from "../context/CreatorContext";
 import MintNFTModal from "../components/MintNFTModal";
-import { AccountContext } from "../context/AccountContext";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -26,7 +26,15 @@ const styles = StyleSheet.create({
 
 export default function ProfileScreen({ navigation }) {
 	const { creator } = useContext(CreatorsContext);
+	const { getNFTsOwnerByUserUsingSigner, currentUserNFTs } =
+		useContext(CreatorContext);
 	const [isMintModalOpen, setIsMintModalOpen] = useState(false);
+
+	useEffect(async () => {
+		if (creator) {
+			await getNFTsOwnerByUserUsingSigner();
+		}
+	}, [creator]);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -64,7 +72,9 @@ export default function ProfileScreen({ navigation }) {
 				</Text>
 				<View style={tw.style(styles.rowFlex, "mt-3")}>
 					<View style={tw.style(styles.verticalItems)}>
-						<Text style={tw.style(styles.textStyle)}>0</Text>
+						<Text style={tw.style(styles.textStyle)}>
+							{currentUserNFTs ? currentUserNFTs.length : 0}
+						</Text>
 						<Text style={tw.style(styles.textStyle)}>
 							NFTs Owned
 						</Text>
