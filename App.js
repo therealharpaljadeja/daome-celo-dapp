@@ -20,18 +20,21 @@ export default function App() {
 	const { account } = useContext(AccountContext);
 	const { userRegistered, checkingIfUserRegistered } =
 		useContext(UserContext);
-	const { creator } = useContext(CreatorsContext);
+	const { creator, loadingCreator } = useContext(CreatorsContext);
 
 	return (
 		<>
 			{account ? (
 				<>
-					{checkingIfUserRegistered ? (
-						<ActivityIndicator
-							animating={true}
-							size='large'
-							color='#a855f7'
-						/>
+					{checkingIfUserRegistered || loadingCreator ? (
+						<SafeAreaView
+							style={tw`flex-1 justify-center items-center`}>
+							<ActivityIndicator
+								animating={true}
+								size='large'
+								color='#a855f7'
+							/>
+						</SafeAreaView>
 					) : (
 						<>
 							<>{!userRegistered && <SignUpModal />}</>

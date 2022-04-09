@@ -12,14 +12,17 @@ export const CreatorsContext = React.createContext(null);
 export default function CreatorsContextProvider({ children }) {
 	const [creator, setCreator] = useState(null);
 	const [creatorAddress, setCreatorAddress] = useState(null);
+	const [loadingCreator, setLoadingCreator] = useState(false);
 	const { connector, account } = useContext(AccountContext);
 	const { userRegistered } = useContext(UserContext);
 
 	useEffect(async () => {
 		if (userRegistered) {
+			setLoadingCreator(true);
 			let creatorAddress = await getCreatorAddressByAddress(account);
 			setCreatorAddress(creatorAddress);
 			setCreator(await getCreatorObjFromAddress(creatorAddress));
+			setLoadingCreator(false);
 		}
 	}, [userRegistered]);
 
@@ -33,6 +36,7 @@ export default function CreatorsContextProvider({ children }) {
 				registerUser,
 				creator,
 				creatorAddress,
+				loadingCreator,
 			}}>
 			{children}
 		</CreatorsContext.Provider>
