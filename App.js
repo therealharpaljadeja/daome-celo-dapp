@@ -7,14 +7,19 @@ import { UserContext } from "./context/UserContext";
 import tw from "twrnc";
 import SignUpModal from "./components/SignUpModal";
 import { CreatorsContext } from "./context/CreatorsContext";
+import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import Icon from "react-native-vector-icons/AntDesign";
 import FeedScreen from "./screens/Feed";
 import ProfileScreen from "./screens/Profile";
 import SettingsScreen from "./screens/Settings";
+import Post from "./screens/Post";
+import ProfilePostNavigator from "./screens/ProfilePostNavigator";
 
 const BottomTabs = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 export default function App() {
 	const { account } = useContext(AccountContext);
@@ -42,7 +47,7 @@ export default function App() {
 								{creator && (
 									<NavigationContainer>
 										<BottomTabs.Navigator
-											initialRouteName='Profile'
+											initialRouteName='ProfilePostNavigator'
 											screenOptions={({ route }) => ({
 												tabBarLabelPosition:
 													"beside-icon",
@@ -76,7 +81,8 @@ export default function App() {
 											/>
 											<BottomTabs.Screen
 												name='Profile'
-												component={ProfileScreen}
+												options={{ headerShown: false }}
+												component={ProfilePostNavigator}
 											/>
 											<BottomTabs.Screen
 												name='Settings'

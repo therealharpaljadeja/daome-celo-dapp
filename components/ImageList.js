@@ -6,19 +6,12 @@ import {
 	View,
 	useWindowDimensions,
 	ActivityIndicator,
+	TouchableOpacity,
 } from "react-native";
 import { CreatorContext } from "../context/CreatorContext";
-export default function ImageList() {
+export default function ImageList({ navigation }) {
 	const { loadingNFT, currentUserNFTs } = useContext(CreatorContext);
 	const window = useWindowDimensions();
-	let images = [
-		"https://bit.ly/dan-abramov",
-		"https://bit.ly/kent-c-dodds",
-		"https://bit.ly/ryan-florence",
-		"https://bit.ly/prosper-baba",
-		"https://bit.ly/code-beast",
-		"https://bit.ly/sage-adebayo",
-	];
 	return (
 		<>
 			{loadingNFT ? (
@@ -35,13 +28,20 @@ export default function ImageList() {
 					keyExtractor={(item, index) => index.toString()}
 					renderItem={({ item }) => {
 						return (
-							<Image
-								style={{
-									width: window.width / 3,
-									aspectRatio: 1,
-								}}
-								source={{ uri: item.image }}
-							/>
+							<TouchableOpacity
+								onPress={() =>
+									navigation.navigate("Post", {
+										item,
+									})
+								}>
+								<Image
+									style={{
+										width: window.width / 3,
+										aspectRatio: 1,
+									}}
+									source={{ uri: item.image }}
+								/>
+							</TouchableOpacity>
 						);
 					}}
 				/>
@@ -50,6 +50,8 @@ export default function ImageList() {
 			{/* <View style={{}}>
 				<View
 					style={{
+			</View>
+			<View style={{}}>
 						flex: 1,
 						flexDirection: "row",
 						backgroundColor: "red",
@@ -62,8 +64,6 @@ export default function ImageList() {
 						/>
 					</View>
 				</View>
-			</View>
-			<View style={{}}>
 				<View
 					style={{
 						flex: 1,
