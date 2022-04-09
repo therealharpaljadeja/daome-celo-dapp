@@ -47,7 +47,7 @@ export default function App() {
 								{creator && (
 									<NavigationContainer>
 										<BottomTabs.Navigator
-											initialRouteName='ProfilePostNavigator'
+											initialRouteName='Profile'
 											screenOptions={({ route }) => ({
 												tabBarLabelPosition:
 													"beside-icon",
@@ -80,8 +80,11 @@ export default function App() {
 												component={FeedScreen}
 											/>
 											<BottomTabs.Screen
-												name='Profile'
-												options={{ headerShown: false }}
+												name='ProfilePostNavigator'
+												options={{
+													title: "Profile",
+													headerShown: false,
+												}}
 												component={ProfilePostNavigator}
 											/>
 											<BottomTabs.Screen

@@ -8,6 +8,7 @@ import {
 	ActivityIndicator,
 } from "react-native";
 import { useEffect, useState } from "react";
+import * as WebBrowser from "expo-web-browser";
 import { getCreatorObjFromAddress } from "../utils/Creators";
 
 const styles = StyleSheet.create({
@@ -20,7 +21,14 @@ const styles = StyleSheet.create({
 });
 
 export default function Post({ navigation, route }) {
-	let { creatorAddress, name, description, image } = route.params.item;
+	let {
+		creatorAddress,
+		name,
+		description,
+		image,
+		collectionAddress,
+		tokenId,
+	} = route.params.item;
 	const [creatorObj, setCreatorObj] = useState(null);
 	const [loadingCreator, setLoadingCreator] = useState(false);
 
@@ -28,11 +36,16 @@ export default function Post({ navigation, route }) {
 		if (route.params.item) {
 			setLoadingCreator(true);
 			let creatorObj = await getCreatorObjFromAddress(creatorAddress);
-			console.log(creatorObj);
 			setCreatorObj(creatorObj);
 			setLoadingCreator(false);
 		}
 	}, [route.params.item]);
+
+	const _handlePressButtonAsync = async () => {
+		let result = await WebBrowser.openBrowserAsync(
+			`https://alfajores-blockscout.celo-testnet.org/token/${collectionAddress}/instance/${tokenId}/token-transfers`
+		);
+	};
 
 	return (
 		<>
@@ -68,7 +81,9 @@ export default function Post({ navigation, route }) {
 						<TouchableOpacity style={styles.button}>
 							<Text style={styles.buttonText}>Approve</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.button}>
+						<TouchableOpacity
+							onPress={_handlePressButtonAsync}
+							style={styles.button}>
 							<Text style={styles.buttonText}>
 								View on Explorer
 							</Text>
