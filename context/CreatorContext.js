@@ -8,6 +8,7 @@ import {
 	tokenOwnedByUser,
 } from "../utils/NFT";
 import { CreatorsContext } from "./CreatorsContext";
+import { createMarketItem } from "../utils/NFTMarket";
 
 export const CreatorContext = React.createContext(null);
 
@@ -47,6 +48,10 @@ export default function CreatorContextProvider({ children }) {
 		return result;
 	}
 
+	async function listItemForSale(collectionAddress, tokenId, price) {
+		await createMarketItem(connector, collectionAddress, tokenId, price);
+	}
+
 	return (
 		<CreatorContext.Provider
 			value={{
@@ -56,6 +61,7 @@ export default function CreatorContextProvider({ children }) {
 				getNFTsOwnerByUserUsingSigner,
 				approveNFTToMarketplace,
 				isNFTApproved,
+				listItemForSale,
 			}}>
 			{children}
 		</CreatorContext.Provider>

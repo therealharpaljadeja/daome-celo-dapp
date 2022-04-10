@@ -1,5 +1,12 @@
 import tw from "twrnc";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+	View,
+	Text,
+	Image,
+	TouchableOpacity,
+	StyleSheet,
+	useWindowDimensions,
+} from "react-native";
 
 const styles = StyleSheet.create({
 	rowFlex: tw`flex-row`,
@@ -11,6 +18,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Post() {
+	const window = useWindowDimensions();
 	return (
 		<View>
 			<View
@@ -26,7 +34,7 @@ export default function Post() {
 				<Text>username</Text>
 			</View>
 			<Image
-				style={tw.style(styles.image, "border-b-2")}
+				style={tw.style(styles.image, { width: window.width })}
 				source={{
 					uri: "https://www.pinkvilla.com/imageresize/decoding_nfts_what_are_nfts_and_how_do_they_work_all_you_need_to_know.jpg?width=752&format=webp&t=pvorg",
 				}}

@@ -6,11 +6,13 @@ import {
 	TouchableOpacity,
 	StyleSheet,
 	ActivityIndicator,
+	useWindowDimensions,
 } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import * as WebBrowser from "expo-web-browser";
 import { getCreatorObjFromAddress } from "../utils/Creators";
 import { CreatorContext } from "../context/CreatorContext";
+import SellModal from "../components/SellModal";
 
 const styles = StyleSheet.create({
 	rowFlex: tw`flex-row`,
@@ -22,6 +24,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Post({ navigation, route }) {
+	const window = useWindowDimensions();
 	let {
 		creatorAddress,
 		name,
@@ -32,9 +35,16 @@ export default function Post({ navigation, route }) {
 	} = route.params.item;
 	const [creatorObj, setCreatorObj] = useState(null);
 	const [loadingCreator, setLoadingCreator] = useState(false);
-	const { approveNFTToMarketplace, approvingNFT, isNFTApproved } =
-		useContext(CreatorContext);
+	const [isSellNFTModalOpen, setIsSellNFTModalOpen] = useState(false);
+	const {
+		approveNFTToMarketplace,
+		approvingNFT,
+		isNFTApproved,
+		listItemForSale,
+	} = useContext(CreatorContext);
 	const [isApproved, setIsApproved] = useState(false);
+	const [price, setPrice] = useState("");
+	const [creatingMarketItem, setCreatingMarketItem] = useState(false);
 
 	useEffect(async () => {
 		if (route.params.item) {
@@ -56,8 +66,24 @@ export default function Post({ navigation, route }) {
 		);
 	};
 
+	async function listNFT() {
+		setCreatingMarketItem(true);
+		await listItemForSale(collectionAddress, tokenId, price);
+		setIsSellNFTModalOpen(false);
+		setCreatingMarketItem(false);
+	}
+
 	return (
 		<>
+			<SellModal
+				isSellNFTModalOpen={isSellNFTModalOpen}
+				setIsSellNFTModalOpen={setIsSellNFTModalOpen}
+				setPrice={setPrice}
+				price={price}
+				name={name}
+				listNFT={listNFT}
+				creatingMarketItem={creatingMarketItem}
+			/>
 			{creatorObj ? (
 				<View>
 					<View
@@ -73,7 +99,7 @@ export default function Post({ navigation, route }) {
 						<Text>{creatorObj.username}</Text>
 					</View>
 					<Image
-						style={tw.style(styles.image, "border-b-2")}
+						style={tw.style(styles.image, { width: window.width })}
 						source={{
 							uri: image,
 						}}
@@ -99,10 +125,7 @@ export default function Post({ navigation, route }) {
 								{isApproved ? (
 									<TouchableOpacity
 										onPress={() =>
-											approveNFTToMarketplace(
-												collectionAddress,
-												tokenId
-											)
+											setIsSellNFTModalOpen(true)
 										}
 										style={styles.button}>
 										<Text style={styles.buttonText}>
