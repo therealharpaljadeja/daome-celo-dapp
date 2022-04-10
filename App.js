@@ -47,7 +47,7 @@ export default function App() {
 								{creator && (
 									<NavigationContainer>
 										<BottomTabs.Navigator
-											initialRouteName='Profile'
+											initialRouteName='ProfilePostNavigator'
 											screenOptions={({ route }) => ({
 												tabBarLabelPosition:
 													"beside-icon",

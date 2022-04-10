@@ -7,9 +7,10 @@ import {
 	StyleSheet,
 	ActivityIndicator,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import * as WebBrowser from "expo-web-browser";
 import { getCreatorObjFromAddress } from "../utils/Creators";
+import { CreatorContext } from "../context/CreatorContext";
 
 const styles = StyleSheet.create({
 	rowFlex: tw`flex-row`,
@@ -31,6 +32,9 @@ export default function Post({ navigation, route }) {
 	} = route.params.item;
 	const [creatorObj, setCreatorObj] = useState(null);
 	const [loadingCreator, setLoadingCreator] = useState(false);
+	const { approveNFTToMarketplace, approvingNFT, isNFTApproved } =
+		useContext(CreatorContext);
+	const [isApproved, setIsApproved] = useState(false);
 
 	useEffect(async () => {
 		if (route.params.item) {
@@ -40,6 +44,11 @@ export default function Post({ navigation, route }) {
 			setLoadingCreator(false);
 		}
 	}, [route.params.item]);
+
+	useEffect(async () => {
+		let isApproved = await isNFTApproved(collectionAddress, tokenId);
+		setIsApproved(isApproved);
+	}, []);
 
 	const _handlePressButtonAsync = async () => {
 		let result = await WebBrowser.openBrowserAsync(
@@ -78,9 +87,44 @@ export default function Post({ navigation, route }) {
 						<Text>{description}</Text>
 					</View>
 					<View style={tw`justify-center px-2 bg-white flex-row `}>
-						<TouchableOpacity style={styles.button}>
-							<Text style={styles.buttonText}>Approve</Text>
-						</TouchableOpacity>
+						{approvingNFT ? (
+							<ActivityIndicator
+								animating={true}
+								size='small'
+								style={tw`py-4`}
+								color='#a855f7'
+							/>
+						) : (
+							<>
+								{isApproved ? (
+									<TouchableOpacity
+										onPress={() =>
+											approveNFTToMarketplace(
+												collectionAddress,
+												tokenId
+											)
+										}
+										style={styles.button}>
+										<Text style={styles.buttonText}>
+											Sell
+										</Text>
+									</TouchableOpacity>
+								) : (
+									<TouchableOpacity
+										onPress={() =>
+											approveNFTToMarketplace(
+												collectionAddress,
+												tokenId
+											)
+										}
+										style={styles.button}>
+										<Text style={styles.buttonText}>
+											Approve
+										</Text>
+									</TouchableOpacity>
+								)}
+							</>
+						)}
 						<TouchableOpacity
 							onPress={_handlePressButtonAsync}
 							style={styles.button}>

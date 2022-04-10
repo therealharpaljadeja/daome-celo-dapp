@@ -3,6 +3,7 @@ import { getNFTCollectionAddress } from "./Creator";
 import axios from "axios";
 import Creator from "../abi/Creator.json";
 import Web3 from "web3";
+import { MARKETPLACE_CONTRACT_ADDRESS } from "@env";
 
 const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
 
@@ -109,30 +110,25 @@ export const tokenMetadata = async (
 	return nft;
 };
 
-export const approveToMarketplace = async (collectionAddress, tokenId) => {
+export const approveToMarketplace = async (
+	connector,
+	collectionAddress,
+	tokenId
+) => {
 	let nftContract = new web3.eth.Contract(NFT.abi, collectionAddress);
 	let txObject = await nftContract.methods
 		.approve(MARKETPLACE_CONTRACT_ADDRESS, tokenId)
-		.send();
+		.encodeABI();
 
-	requestTxSig(
-		kit,
-		[
-			{
-				from: kit.defaultAccount,
-				to: collectionAddress,
-				tx: txObject,
-				feeCurrency: FeeCurrency.cUSD,
-			},
-		],
-		{
-			requestId: "approveNFT",
-			dappName: "DAOMe",
-			callback: Linking.createURL("/approveNFT"),
-		}
-	);
+	let receipt = await connector.sendTransaction({
+		from: connector.accounts[0],
+		to: collectionAddress,
+		data: txObject.toString(),
+	});
 
-	return txObject;
+	console.log(receipt);
+
+	return receipt;
 };
 
 export const withdrawRoyalty = async (collectionAddress) => {
@@ -156,5 +152,13 @@ export const withdrawRoyalty = async (collectionAddress) => {
 		}
 	);
 
+	return txObject;
+};
+
+export const isApprovedToMarketplace = async (collectionAddress, tokenId) => {
+	let nftContract = new web3.eth.Contract(NFT.abi, collectionAddress);
+	let txObject = await nftContract.methods
+		.isApprovedToMarketplace(MARKETPLACE_CONTRACT_ADDRESS, tokenId)
+		.call();
 	return txObject;
 };
