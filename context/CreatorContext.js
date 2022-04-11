@@ -6,6 +6,7 @@ import {
 	isApprovedToMarketplace,
 	mintNFT,
 	tokenOwnedByUser,
+	withdrawRoyalty,
 } from "../utils/NFT";
 import { CreatorsContext } from "./CreatorsContext";
 import {
@@ -72,6 +73,10 @@ export default function CreatorContextProvider({ children }) {
 		await createMarketItem(connector, collectionAddress, tokenId, price);
 	}
 
+	async function withdraw(collectionAddress) {
+		await withdrawRoyalty(connector, collectionAddress);
+	}
+
 	return (
 		<CreatorContext.Provider
 			value={{
@@ -85,6 +90,7 @@ export default function CreatorContextProvider({ children }) {
 				listItemForSale,
 				loadingListedNFT,
 				loadingOwnedNFT,
+				withdraw,
 			}}>
 			{children}
 		</CreatorContext.Provider>

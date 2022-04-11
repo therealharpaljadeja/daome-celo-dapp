@@ -33,6 +33,7 @@ export default function ProfileScreen({ navigation }) {
 		loadingOwnedNFT,
 		loadingListedNFT,
 		listedNFTs,
+		withdraw,
 	} = useContext(CreatorContext);
 	const [isMintModalOpen, setIsMintModalOpen] = useState(false);
 
@@ -42,6 +43,8 @@ export default function ProfileScreen({ navigation }) {
 			await getNFTsListedByUserUsingSigner();
 		}
 	}, [creator]);
+
+	console.log(creator);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -80,7 +83,9 @@ export default function ProfileScreen({ navigation }) {
 				<View style={tw.style(styles.rowFlex, "mt-3")}>
 					<View style={tw.style(styles.verticalItems)}>
 						<Text style={tw.style(styles.textStyle)}>
-							{currentUserNFTs ? currentUserNFTs.length : 0}
+							{currentUserNFTs && listedNFTs
+								? currentUserNFTs.length + listedNFTs.length
+								: 0}
 						</Text>
 						<Text style={tw.style(styles.textStyle)}>
 							NFTs Owned
@@ -103,7 +108,8 @@ export default function ProfileScreen({ navigation }) {
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
-						style={tw.style(styles.touchableOpacity, "mt-3")}>
+						style={tw.style(styles.touchableOpacity, "mt-3")}
+						onPress={() => withdraw(creator.nftCollectionAddress)}>
 						<Text style={tw.style(styles.textStyle, "text-white")}>
 							Withdraw Royalty
 						</Text>

@@ -131,26 +131,15 @@ export const approveToMarketplace = async (
 	return receipt;
 };
 
-export const withdrawRoyalty = async (collectionAddress) => {
+export const withdrawRoyalty = async (connector, collectionAddress) => {
 	let nftContract = new web3.eth.Contract(NFT.abi, collectionAddress);
-	let txObject = await nftContract.methods.withdraw().send();
+	let txObject = await nftContract.methods.withdraw().encodeABI();
 
-	requestTxSig(
-		kit,
-		[
-			{
-				from: kit.defaultAccount,
-				to: collectionAddress,
-				tx: txObject,
-				feeCurrency: FeeCurrency.cUSD,
-			},
-		],
-		{
-			requestId: "withdrawRoyalty",
-			dappName: "DAOMe",
-			callback: Linking.createURL("/withdrawRoyalty"),
-		}
-	);
+	await connector.sendTransaction({
+		from: connector.accounts[0],
+		to: collectionAddress,
+		data: txObject.toString(),
+	});
 
 	return txObject;
 };
