@@ -9,7 +9,6 @@ export default function FeedScreen() {
 	const [items, setItems] = useState([]);
 	useEffect(async () => {
 		let items = await fetchMarketItems();
-		console.log(items);
 		setItems(items);
 	}, []);
 
@@ -18,7 +17,7 @@ export default function FeedScreen() {
 			{items !== undefined && items.length > 0 ? (
 				<FlatList
 					data={items}
-					renderItem={() => <Post />}
+					renderItem={({ item }) => <Post nft={item} />}
 					keyExtractor={(nft) => {
 						return `${nft.collectionAddress}-${nft.tokenId}`;
 					}}

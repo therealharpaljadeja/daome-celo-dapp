@@ -9,8 +9,7 @@ import {
 	TouchableOpacity,
 } from "react-native";
 import { CreatorContext } from "../context/CreatorContext";
-export default function ImageList({ navigation }) {
-	const { loadingNFT, currentUserNFTs } = useContext(CreatorContext);
+export default function ImageList({ navigation, loadingNFT, currentUserNFTs }) {
 	const window = useWindowDimensions();
 	return (
 		<>

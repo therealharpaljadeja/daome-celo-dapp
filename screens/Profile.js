@@ -26,13 +26,20 @@ const styles = StyleSheet.create({
 
 export default function ProfileScreen({ navigation }) {
 	const { creator } = useContext(CreatorsContext);
-	const { getNFTsOwnerByUserUsingSigner, currentUserNFTs } =
-		useContext(CreatorContext);
+	const {
+		getNFTsOwnerByUserUsingSigner,
+		getNFTsListedByUserUsingSigner,
+		currentUserNFTs,
+		loadingOwnedNFT,
+		loadingListedNFT,
+		listedNFTs,
+	} = useContext(CreatorContext);
 	const [isMintModalOpen, setIsMintModalOpen] = useState(false);
 
 	useEffect(async () => {
 		if (creator) {
 			await getNFTsOwnerByUserUsingSigner();
+			await getNFTsListedByUserUsingSigner();
 		}
 	}, [creator]);
 
@@ -113,8 +120,26 @@ export default function ProfileScreen({ navigation }) {
 						tabBarIndicatorContainerStyle: tw`bg-purple-200 `,
 						tabBarIndicatorStyle: tw`bg-purple-500 h-12 top-2 rounded-md relative`,
 					}}>
-					<Tab.Screen name='Owned' component={ImageList} />
-					<Tab.Screen name='Listed' component={ImageList} />
+					<Tab.Screen
+						name='Owned'
+						children={(props) => (
+							<ImageList
+								{...props}
+								currentUserNFTs={currentUserNFTs}
+								loadingNFT={loadingOwnedNFT}
+							/>
+						)}
+					/>
+					<Tab.Screen
+						name='Listed'
+						children={(props) => (
+							<ImageList
+								{...props}
+								currentUserNFTs={listedNFTs}
+								loadingNFT={loadingListedNFT}
+							/>
+						)}
+					/>
 				</Tab.Navigator>
 			</View>
 		</View>

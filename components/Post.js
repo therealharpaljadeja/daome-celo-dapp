@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import tw from "twrnc";
 import {
 	View,
@@ -7,6 +8,8 @@ import {
 	StyleSheet,
 	useWindowDimensions,
 } from "react-native";
+import * as WebBrowser from "expo-web-browser";
+import { AccountContext } from "../context/AccountContext";
 
 const styles = StyleSheet.create({
 	rowFlex: tw`flex-row`,
@@ -17,8 +20,25 @@ const styles = StyleSheet.create({
 	borderBottom: tw`border-b-2 border-gray-200`,
 });
 
-export default function Post() {
+export default function Post({ nft }) {
 	const window = useWindowDimensions();
+	const { account } = useContext(AccountContext);
+	const {
+		name,
+		owner,
+		creator,
+		seller,
+		image,
+		description,
+		collectionAddress,
+		tokenId,
+		price,
+	} = nft;
+	const _handlePressButtonAsync = async () => {
+		let result = await WebBrowser.openBrowserAsync(
+			`https://alfajores-blockscout.celo-testnet.org/token/${collectionAddress}/instance/${tokenId}/token-transfers`
+		);
+	};
 	return (
 		<View>
 			<View
@@ -31,27 +51,36 @@ export default function Post() {
 					style={styles.avatar}
 					source={{ uri: "https://bit.ly/dan-abramov" }}
 				/>
-				<Text>username</Text>
+				<Text>{creator.name}</Text>
 			</View>
 			<Image
 				style={tw.style(styles.image, { width: window.width })}
 				source={{
-					uri: "https://www.pinkvilla.com/imageresize/decoding_nfts_what_are_nfts_and_how_do_they_work_all_you_need_to_know.jpg?width=752&format=webp&t=pvorg",
+					uri: image,
 				}}
 			/>
 			<View
 				style={tw.style(
-					`px-4 py-2 bg-white border-t-2`,
+					`px-4 py-2 bg-white border-t-2 flex-row justify-between items-center`,
 					styles.borderBottom
 				)}>
-				<Text>Bored Ape #1239</Text>
-				<Text>Bored Ape Collection</Text>
+				<View>
+					<Text>{name}</Text>
+					<Text>{description}</Text>
+				</View>
+				<View>
+					<Text style={tw`text-lg `}>{price} $CELO</Text>
+				</View>
 			</View>
 			<View style={tw`justify-center px-2 bg-white flex-row `}>
-				<TouchableOpacity style={styles.button}>
-					<Text style={styles.buttonText}>Approve</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.button}>
+				{account == seller.toLowerCase() ? null : (
+					<TouchableOpacity style={styles.button}>
+						<Text style={styles.buttonText}>Buy</Text>
+					</TouchableOpacity>
+				)}
+				<TouchableOpacity
+					onPress={_handlePressButtonAsync}
+					style={styles.button}>
 					<Text style={styles.buttonText}>View on Explorer</Text>
 				</TouchableOpacity>
 			</View>

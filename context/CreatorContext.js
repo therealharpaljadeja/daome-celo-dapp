@@ -8,15 +8,21 @@ import {
 	tokenOwnedByUser,
 } from "../utils/NFT";
 import { CreatorsContext } from "./CreatorsContext";
-import { createMarketItem } from "../utils/NFTMarket";
+import {
+	createMarketItem,
+	fetchItemsCreated,
+	fetchMyNFTs,
+} from "../utils/NFTMarket";
 
 export const CreatorContext = React.createContext(null);
 
 export default function CreatorContextProvider({ children }) {
 	const { account, connector } = useContext(AccountContext);
 	const { creatorAddress } = useContext(CreatorsContext);
-	const [loadingNFT, setLoadingNFT] = useState(false);
+	const [loadingOwnedNFT, setLoadingOwnedNFT] = useState(false);
+	const [loadingListedNFT, setLoadingListedNFT] = useState(false);
 	const [currentUserNFTs, setCurrentUserNFTs] = useState([]);
+	const [listedNFTs, setListedNFTs] = useState([]);
 	const [approvingNFT, setApprovingNFT] = useState(false);
 
 	async function mintNFTUsingContext(tokenURI, royaltyPercentage) {
@@ -26,10 +32,24 @@ export default function CreatorContextProvider({ children }) {
 	}
 
 	async function getNFTsOwnerByUserUsingSigner() {
-		setLoadingNFT(true);
+		setLoadingOwnedNFT(true);
 		let result = await tokenOwnedByUser(account, creatorAddress);
 		setCurrentUserNFTs(result);
-		setLoadingNFT(false);
+		setLoadingOwnedNFT(false);
+	}
+
+	// async function getNFTsByUserUsingSigner() {
+	// 	setLoadingListedNFT(true);
+	// 	let result = await fetchMyNFTs(account);
+	// 	// setCurrentUserNFTs(result);
+	// 	setLoadingListedNFT(false);
+	// }
+
+	async function getNFTsListedByUserUsingSigner() {
+		setLoadingListedNFT(true);
+		let result = await fetchItemsCreated(account);
+		setListedNFTs(result);
+		setLoadingListedNFT(false);
 	}
 
 	async function approveNFTToMarketplace(collectionAddress, tokenId) {
@@ -56,12 +76,15 @@ export default function CreatorContextProvider({ children }) {
 		<CreatorContext.Provider
 			value={{
 				mintNFT: mintNFTUsingContext,
-				loadingNFT,
 				currentUserNFTs,
+				listedNFTs,
 				getNFTsOwnerByUserUsingSigner,
+				getNFTsListedByUserUsingSigner,
 				approveNFTToMarketplace,
 				isNFTApproved,
 				listItemForSale,
+				loadingListedNFT,
+				loadingOwnedNFT,
 			}}>
 			{children}
 		</CreatorContext.Provider>
