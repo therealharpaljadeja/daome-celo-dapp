@@ -56,7 +56,8 @@ export default function App() {
 													size,
 												}) => {
 													const Icons = {
-														Profile: "user",
+														ProfilePostNavigator:
+															"user",
 														Settings: "setting",
 														Feed: "earth",
 													};

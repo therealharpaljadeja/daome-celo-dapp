@@ -13,6 +13,7 @@ import * as WebBrowser from "expo-web-browser";
 import { getCreatorObjFromAddress } from "../utils/Creators";
 import { CreatorContext } from "../context/CreatorContext";
 import SellModal from "../components/SellModal";
+import { AccountContext } from "../context/AccountContext";
 
 const styles = StyleSheet.create({
 	rowFlex: tw`flex-row`,
@@ -32,10 +33,12 @@ export default function Post({ navigation, route }) {
 		image,
 		collectionAddress,
 		tokenId,
+		seller,
 	} = route.params.item;
 	const [creatorObj, setCreatorObj] = useState(null);
 	const [loadingCreator, setLoadingCreator] = useState(false);
 	const [isSellNFTModalOpen, setIsSellNFTModalOpen] = useState(false);
+	const { account } = useContext(AccountContext);
 	const {
 		approveNFTToMarketplace,
 		approvingNFT,
@@ -122,30 +125,34 @@ export default function Post({ navigation, route }) {
 							/>
 						) : (
 							<>
-								{isApproved ? (
-									<TouchableOpacity
-										onPress={() =>
-											setIsSellNFTModalOpen(true)
-										}
-										style={styles.button}>
-										<Text style={styles.buttonText}>
-											Sell
-										</Text>
-									</TouchableOpacity>
-								) : (
-									<TouchableOpacity
-										onPress={() =>
-											approveNFTToMarketplace(
-												collectionAddress,
-												tokenId
-											)
-										}
-										style={styles.button}>
-										<Text style={styles.buttonText}>
-											Approve
-										</Text>
-									</TouchableOpacity>
-								)}
+								{seller == undefined ? (
+									<>
+										{isApproved ? (
+											<TouchableOpacity
+												onPress={() =>
+													setIsSellNFTModalOpen(true)
+												}
+												style={styles.button}>
+												<Text style={styles.buttonText}>
+													Sell
+												</Text>
+											</TouchableOpacity>
+										) : (
+											<TouchableOpacity
+												onPress={() =>
+													approveNFTToMarketplace(
+														collectionAddress,
+														tokenId
+													)
+												}
+												style={styles.button}>
+												<Text style={styles.buttonText}>
+													Approve
+												</Text>
+											</TouchableOpacity>
+										)}
+									</>
+								) : null}
 							</>
 						)}
 						<TouchableOpacity
