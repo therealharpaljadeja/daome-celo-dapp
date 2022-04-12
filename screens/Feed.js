@@ -1,30 +1,37 @@
 import { useEffect, useState } from "react";
 import Post from "../components/Post";
 import { fetchMarketItems } from "../utils/NFTMarket";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList } from "react-native";
-import tw from "twrnc";
+import { FlatList, View, RefreshControl, ScrollView } from "react-native";
 
 export default function FeedScreen() {
 	const [items, setItems] = useState([]);
-	useEffect(async () => {
+	const [fetchingItems, setFetchingItems] = useState(false);
+	async function marketItemsFetch() {
 		let items = await fetchMarketItems();
 		setItems(items);
+	}
+	useEffect(async () => {
+		setFetchingItems(true);
+		await marketItemsFetch();
+		setFetchingItems(false);
 	}, []);
 
 	return (
-		<SafeAreaView style={tw`px-0 py-0 bg-red-100`}>
-			{items !== undefined && items.length > 0 ? (
-				<FlatList
-					data={items}
-					renderItem={({ item }) => <Post nft={item} />}
-					keyExtractor={(nft) => {
-						return `${nft.collectionAddress}-${nft.tokenId}`;
-					}}
+		<ScrollView
+			refreshControl={
+				<RefreshControl
+					onRefresh={async () => await marketItemsFetch()}
+					refreshing={fetchingItems}
+					colors={["darkorchid"]}
 				/>
-			) : (
-				<></>
-			)}
-		</SafeAreaView>
+			}>
+			<FlatList
+				data={items}
+				renderItem={({ item }) => <Post nft={item} />}
+				keyExtractor={(nft) => {
+					return `${nft.collectionAddress}-${nft.tokenId}`;
+				}}
+			/>
+		</ScrollView>
 	);
 }

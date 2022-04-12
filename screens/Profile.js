@@ -5,6 +5,8 @@ import {
 	Text,
 	StyleSheet,
 	TouchableOpacity,
+	ScrollView,
+	RefreshControl,
 } from "react-native";
 import tw from "twrnc";
 import { useContext, useEffect, useState } from "react";
@@ -43,8 +45,6 @@ export default function ProfileScreen({ navigation }) {
 			await getNFTsListedByUserUsingSigner();
 		}
 	}, [creator]);
-
-	console.log(creator);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -129,21 +129,43 @@ export default function ProfileScreen({ navigation }) {
 					<Tab.Screen
 						name='Owned'
 						children={(props) => (
-							<ImageList
-								{...props}
-								currentUserNFTs={currentUserNFTs}
-								loadingNFT={loadingOwnedNFT}
-							/>
+							<ScrollView
+								refreshControl={
+									<RefreshControl
+										refreshing={loadingOwnedNFT}
+										onRefresh={async () =>
+											await getNFTsOwnerByUserUsingSigner()
+										}
+										colors={["darkorchid"]}
+									/>
+								}>
+								<ImageList
+									{...props}
+									currentUserNFTs={currentUserNFTs}
+									loadingNFT={loadingOwnedNFT}
+								/>
+							</ScrollView>
 						)}
 					/>
 					<Tab.Screen
 						name='Listed'
 						children={(props) => (
-							<ImageList
-								{...props}
-								currentUserNFTs={listedNFTs}
-								loadingNFT={loadingListedNFT}
-							/>
+							<ScrollView
+								refreshControl={
+									<RefreshControl
+										refreshing={loadingListedNFT}
+										onRefresh={async () =>
+											await getNFTsListedByUserUsingSigner()
+										}
+										colors={["darkorchid"]}
+									/>
+								}>
+								<ImageList
+									{...props}
+									currentUserNFTs={listedNFTs}
+									loadingNFT={loadingListedNFT}
+								/>
+							</ScrollView>
 						)}
 					/>
 				</Tab.Navigator>

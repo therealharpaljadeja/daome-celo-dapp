@@ -7,6 +7,8 @@ import {
 	StyleSheet,
 	ActivityIndicator,
 	useWindowDimensions,
+	ScrollView,
+	RefreshControl,
 } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import * as WebBrowser from "expo-web-browser";
@@ -48,7 +50,7 @@ export default function Post({ navigation, route }) {
 	const [isApproved, setIsApproved] = useState(false);
 	const [price, setPrice] = useState("");
 	const [creatingMarketItem, setCreatingMarketItem] = useState(false);
-
+	const [checkingApproved, setCheckingApproved] = useState(false);
 	useEffect(async () => {
 		if (route.params.item) {
 			setLoadingCreator(true);
@@ -58,9 +60,15 @@ export default function Post({ navigation, route }) {
 		}
 	}, [route.params.item]);
 
-	useEffect(async () => {
+	async function checkIfNFTApproved() {
+		setCheckingApproved(true);
 		let isApproved = await isNFTApproved(collectionAddress, tokenId);
 		setIsApproved(isApproved);
+		setCheckingApproved(false);
+	}
+
+	useEffect(async () => {
+		await checkIfNFTApproved();
 	}, []);
 
 	const _handlePressButtonAsync = async () => {
@@ -77,7 +85,14 @@ export default function Post({ navigation, route }) {
 	}
 
 	return (
-		<>
+		<ScrollView
+			refreshControl={
+				<RefreshControl
+					refreshing={checkingApproved}
+					colors={["darkorchid"]}
+					onRefresh={async () => await checkIfNFTApproved()}
+				/>
+			}>
 			<SellModal
 				isSellNFTModalOpen={isSellNFTModalOpen}
 				setIsSellNFTModalOpen={setIsSellNFTModalOpen}
@@ -164,14 +179,7 @@ export default function Post({ navigation, route }) {
 						</TouchableOpacity>
 					</View>
 				</View>
-			) : (
-				<ActivityIndicator
-					animating={true}
-					size='small'
-					style={tw`py-4`}
-					color='#a855f7'
-				/>
-			)}
-		</>
+			) : null}
+		</ScrollView>
 	);
 }

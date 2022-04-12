@@ -11,6 +11,7 @@ import { AccountContext } from "../context/AccountContext";
 import { useContext, useReducer } from "react";
 import { CreatorsContext } from "../context/CreatorsContext";
 import openImagePickerAsync from "../utils/imagePicker";
+import { CreatorContext } from "../context/CreatorContext";
 
 const styles = StyleSheet.create({
 	textInput: tw`border-gray-200 border-2 rounded-md my-1 px-2`,
@@ -46,6 +47,7 @@ const settingsReducer = (state, action) => {
 export function SettingsForm() {
 	const { account, connector } = useContext(AccountContext);
 	const { creator } = useContext(CreatorsContext);
+	const { updateCreatorObj } = useContext(CreatorContext);
 
 	const initialState = {
 		account,
@@ -133,7 +135,9 @@ export function SettingsForm() {
 				}
 				placeholder='NFT Collection Symbol'
 			/>
-			<TouchableOpacity style={styles.button}>
+			<TouchableOpacity
+				onPress={() => updateCreatorObj(state)}
+				style={styles.button}>
 				<Text
 					style={{
 						textAlign: "center",

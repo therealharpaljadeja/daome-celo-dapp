@@ -18,11 +18,6 @@ export const isUserRegistered = async (account) => {
 };
 
 export const registerUser = async (connector, creatorObj) => {
-	const creatorsContract = new web3.eth.Contract(
-		Creators.abi,
-		CREATORS_CONTRACT_ADDRESS
-	);
-
 	let {
 		name,
 		bio,
@@ -48,15 +43,9 @@ export const registerUser = async (connector, creatorObj) => {
 		to: CREATORS_CONTRACT_ADDRESS,
 		data: txData,
 	});
-
-	console.log(receipt);
 };
 
 export const getCreatorAddressByAddress = async (account) => {
-	const creatorsContract = new web3.eth.Contract(
-		Creators.abi,
-		CREATORS_CONTRACT_ADDRESS
-	);
 	let result = await creatorsContract.methods
 		.getCreatorAddressByAddress(account)
 		.call();
@@ -83,7 +72,6 @@ export const getCreatorObjFromAddress = async (contractAddress) => {
 	let royaltyEarned = web3.utils.fromWei(
 		(await web3.eth.getBalance(nftCollectionAddress)).toString()
 	);
-
 	return {
 		username,
 		name,

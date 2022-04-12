@@ -14,6 +14,7 @@ import {
 	fetchItemsCreated,
 	fetchMyNFTs,
 } from "../utils/NFTMarket";
+import { updateCreator } from "../utils/Creator";
 
 export const CreatorContext = React.createContext(null);
 
@@ -27,7 +28,6 @@ export default function CreatorContextProvider({ children }) {
 	const [approvingNFT, setApprovingNFT] = useState(false);
 
 	async function mintNFTUsingContext(tokenURI, royaltyPercentage) {
-		let creatorAddress = await getCreatorAddressByAddress(account);
 		await mintNFT(connector, creatorAddress, tokenURI, royaltyPercentage);
 		return;
 	}
@@ -38,13 +38,6 @@ export default function CreatorContextProvider({ children }) {
 		setCurrentUserNFTs(result);
 		setLoadingOwnedNFT(false);
 	}
-
-	// async function getNFTsByUserUsingSigner() {
-	// 	setLoadingListedNFT(true);
-	// 	let result = await fetchMyNFTs(account);
-	// 	// setCurrentUserNFTs(result);
-	// 	setLoadingListedNFT(false);
-	// }
 
 	async function getNFTsListedByUserUsingSigner() {
 		setLoadingListedNFT(true);
@@ -77,6 +70,10 @@ export default function CreatorContextProvider({ children }) {
 		await withdrawRoyalty(connector, collectionAddress);
 	}
 
+	async function updateCreatorObj(creatorObj) {
+		await updateCreator(connector, creatorAddress, creatorObj);
+	}
+
 	return (
 		<CreatorContext.Provider
 			value={{
@@ -91,6 +88,7 @@ export default function CreatorContextProvider({ children }) {
 				loadingListedNFT,
 				loadingOwnedNFT,
 				withdraw,
+				updateCreatorObj,
 			}}>
 			{children}
 		</CreatorContext.Provider>

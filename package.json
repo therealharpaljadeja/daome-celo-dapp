@@ -10,6 +10,8 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo/config-plugins": "^4.1.1",
+    "@openzeppelin/contracts": "^4.5.0",
     "@react-native-async-storage/async-storage": "^1.17.3",
     "@react-navigation/bottom-tabs": "^6.3.1",
     "@react-navigation/material-top-tabs": "^6.2.1",
@@ -48,7 +50,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@pinata/sdk": "^1.1.24"
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@pinata/sdk": "^1.1.24",
+    "chai": "^4.3.6",
+    "ethereum-waffle": "^3.4.4",
+    "ethers": "^5.6.2",
+    "hardhat": "^2.9.3"
   },
   "private": true
 }

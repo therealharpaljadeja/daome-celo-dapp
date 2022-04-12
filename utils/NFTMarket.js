@@ -35,6 +35,7 @@ export const fetchMarketItems = async () => {
 		NFTMarket.abi,
 		MARKETPLACE_CONTRACT_ADDRESS
 	);
+
 	let result = await nftMarketContract.methods.fetchMarketItems().call();
 	let nfts = [];
 	for (let i = 0; i < result.length; i++) {
@@ -97,7 +98,6 @@ export const fetchMyNFTs = async (account) => {
 	let result = await nftMarketContract.methods
 		.fetchMyNFTs(currentAddress)
 		.call();
-	console.log(result, "result");
 	let nfts = [];
 	for (let i = 0; i < result.length; i++) {
 		let nftContract = new web3.eth.Contract(NFT.abi, result[i].nftContract);
@@ -145,7 +145,6 @@ export const fetchMyNFTs = async (account) => {
 			nft.creator = {};
 			nft.creator.name = sellerName;
 			nft.creator.profilePicUrl = sellerProfilePic;
-			console.log(name, description);
 			nfts.push(nft);
 		}
 	}
@@ -214,4 +213,21 @@ export const fetchItemsCreated = async (account) => {
 	}
 
 	return nfts;
+};
+
+export const createSale = async () => {
+	let nftMarketContract = new web3.eth.Contract(
+		NFTMarket.abi,
+		MARKETPLACE_CONTRACT_ADDRESS
+	);
+
+	let txObject = nftMarketContract.methods
+		.createMarketSale(collectionAddress, tokenId, { value: price })
+		.encodeABI();
+
+	await connector.sendTransaction({
+		from: connector.accounts[0],
+		to: MARKETPLACE_CONTRACT_ADDRESS,
+		data: txObject.toString(),
+	});
 };

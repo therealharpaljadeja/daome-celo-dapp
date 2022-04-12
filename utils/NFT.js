@@ -22,18 +22,15 @@ export const mintNFT = async (
 ) => {
 	let collectionAddress = await getNFTCollectionAddress(creatorAddress);
 	let nftContract = new web3.eth.Contract(NFT.abi, collectionAddress);
-	console.log(tokenURI, royaltyPercentage);
 	let txObject = await nftContract.methods
 		.createToken(tokenURI, royaltyPercentage)
 		.encodeABI();
 
-	let receipt = await connector.sendTransaction({
+	await connector.sendTransaction({
 		from: connector.accounts[0],
 		to: collectionAddress,
 		data: txObject.toString(),
 	});
-
-	return receipt;
 };
 
 export const tokenOwnedByUser = async (account, creatorAddress) => {
@@ -120,15 +117,11 @@ export const approveToMarketplace = async (
 		.approve(MARKETPLACE_CONTRACT_ADDRESS, tokenId)
 		.encodeABI();
 
-	let receipt = await connector.sendTransaction({
+	await connector.sendTransaction({
 		from: connector.accounts[0],
 		to: collectionAddress,
 		data: txObject.toString(),
 	});
-
-	console.log(receipt);
-
-	return receipt;
 };
 
 export const withdrawRoyalty = async (connector, collectionAddress) => {
