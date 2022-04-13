@@ -1,11 +1,7 @@
-import tw from "twrnc";
-import { useContext } from "react";
 import {
 	FlatList,
 	Image,
-	View,
 	useWindowDimensions,
-	ActivityIndicator,
 	TouchableOpacity,
 } from "react-native";
 export default function ImageList({ navigation, currentUserNFTs }) {
