@@ -71,6 +71,9 @@ export const fetchMarketItems = async () => {
 			.profilePicUrl()
 			.call();
 
+		let sellerProfilePicUrl = (await axios.get(sellerProfilePic)).data
+			.image;
+
 		nft.collectionAddress = result[i].nftContract;
 		nft.seller = result[i].seller;
 		nft.itemId = result[i].itemId;
@@ -82,7 +85,7 @@ export const fetchMarketItems = async () => {
 		nft.image = image;
 		nft.creator = {};
 		nft.creator.name = sellerName;
-		nft.creator.profilePicUrl = sellerProfilePic;
+		nft.creator.profilePicUrl = sellerProfilePicUrl;
 		nfts.push(nft);
 	}
 

@@ -62,7 +62,7 @@ export default function MintNFTModal({ isMintModalOpen, setIsMintModalOpen }) {
 		};
 
 		let result = await pinata.pinJSONToIPFS(nftMetadata);
-		let url = `https://ipfs.io/ipfs/${result.IpfsHash}`;
+		let url = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
 		await mintNFT(url, state.royaltyPercentage);
 		console.log("minting done!");
 		setIsMintModalOpen(false);

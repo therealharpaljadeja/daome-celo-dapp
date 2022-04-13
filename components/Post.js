@@ -34,10 +34,11 @@ export default function Post({ nft }) {
 		tokenId,
 		price,
 	} = nft;
+	console.log(creator.profilePicUrl);
 	const _handlePressButtonAsync = async () => {
-		let result = await WebBrowser.openBrowserAsync(
-			`https://alfajores-blockscout.celo-testnet.org/token/${collectionAddress}/instance/${tokenId}/token-transfers`
-		);
+		let url = `https://alfajores-blockscout.celo-testnet.org/token/${collectionAddress}/instance/${tokenId}/token-transfers`;
+		console.log(url);
+		let result = await WebBrowser.openBrowserAsync(url);
 	};
 	return (
 		<View>
@@ -49,7 +50,11 @@ export default function Post({ nft }) {
 				)}>
 				<Image
 					style={styles.avatar}
-					source={{ uri: "https://bit.ly/dan-abramov" }}
+					source={{
+						uri: creator.profilePicUrl
+							? creator.profilePicUrl
+							: "https://bit.ly/dan-abramov",
+					}}
 				/>
 				<Text>{creator.name}</Text>
 			</View>

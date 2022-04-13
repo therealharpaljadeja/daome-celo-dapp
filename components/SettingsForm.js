@@ -37,6 +37,8 @@ const settingsReducer = (state, action) => {
 			return { ...state, nftCollectionSymbol: action.payload };
 		case "PFP_URL":
 			return { ...state, profilePicUrl: action.payload };
+		case "PFP":
+			return { ...state, pfp: action.payload };
 		case "CLEAR":
 			return initialState;
 		default:
@@ -60,12 +62,25 @@ export function SettingsForm() {
 				? "https://bit.ly/dan-abramov"
 				: creator.profilePicUrl,
 		username: creator.username,
+		pfp:
+			creator.profilePicUrl === ""
+				? "https://bit.ly/dan-abramov"
+				: creator.profilePicUrl,
 	};
 
 	async function uploadToIpfs() {
 		let image = await openImagePickerAsync();
+
 		if (image) {
-			dispatch({ type: "PFP_URL", payload: image });
+			let nftMetadata = {
+				name: state.username,
+				image: image,
+			};
+
+			let result = await pinata.pinJSONToIPFS(nftMetadata);
+			let url = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
+			dispatch({ type: "PFP", payload: image });
+			dispatch({ type: "PFP_URL", payload: url });
 		}
 	}
 
@@ -77,10 +92,7 @@ export function SettingsForm() {
 	return (
 		<View style={styles.modal}>
 			<TouchableOpacity onPress={uploadToIpfs}>
-				<Image
-					style={styles.image}
-					source={{ uri: state.profilePicUrl }}
-				/>
+				<Image style={styles.image} source={{ uri: state.pfp }} />
 			</TouchableOpacity>
 			<TextInput
 				style={styles.textInput}

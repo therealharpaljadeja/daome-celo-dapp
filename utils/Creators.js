@@ -2,6 +2,7 @@ import Creators from "../abi/Creators.json";
 import Creator from "../abi/Creator.json";
 import { CREATORS_CONTRACT_ADDRESS } from "@env";
 import Web3 from "web3";
+import axios from "axios";
 
 const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
 
@@ -38,7 +39,7 @@ export const registerUser = async (connector, creatorObj) => {
 		)
 		.encodeABI();
 
-	let receipt = await connector.sendTransaction({
+	await connector.sendTransaction({
 		from: connector.accounts[0],
 		to: CREATORS_CONTRACT_ADDRESS,
 		data: txData,
@@ -46,6 +47,7 @@ export const registerUser = async (connector, creatorObj) => {
 };
 
 export const getCreatorAddressByAddress = async (account) => {
+	console.log(account);
 	let result = await creatorsContract.methods
 		.getCreatorAddressByAddress(account)
 		.call();
@@ -59,6 +61,9 @@ export const getCreatorObjFromAddress = async (contractAddress) => {
 	let bio = await creatorContract.methods.bio().call();
 
 	let profilePicUrl = await creatorContract.methods.profilePicUrl().call();
+	let response = await axios.get(profilePicUrl);
+	let { image } = response.data;
+
 	let nftCollectionName = await creatorContract.methods
 		.nftCollectionName()
 		.call();
@@ -69,9 +74,12 @@ export const getCreatorObjFromAddress = async (contractAddress) => {
 		.nftCollectionAddress()
 		.call();
 
+	console.log(nftCollectionAddress);
+
 	let royaltyEarned = web3.utils.fromWei(
 		(await web3.eth.getBalance(nftCollectionAddress)).toString()
 	);
+
 	return {
 		username,
 		name,
@@ -79,7 +87,7 @@ export const getCreatorObjFromAddress = async (contractAddress) => {
 		nftCollectionName,
 		nftCollectionSymbol,
 		nftCollectionAddress,
-		profilePicUrl,
+		profilePicUrl: image,
 		royaltyEarned,
 	};
 };

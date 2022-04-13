@@ -72,7 +72,7 @@ export default function ProfileScreen({ navigation }) {
 				/>
 				<Image
 					style={tw.style(styles.imageStyles, "mt-15")}
-					source={{ uri: "https://bit.ly/dan-abramov" }}
+					source={{ uri: creator.profilePicUrl }}
 				/>
 				<Text style={tw.style(styles.textStyle, "text-lg mt-2")}>
 					{creator.name}

@@ -112,7 +112,7 @@ export default function Post({ navigation, route }) {
 						)}>
 						<Image
 							style={styles.avatar}
-							source={{ uri: "https://bit.ly/dan-abramov" }}
+							source={{ uri: creatorObj.profilePicUrl }}
 						/>
 						<Text>{creatorObj.username}</Text>
 					</View>
