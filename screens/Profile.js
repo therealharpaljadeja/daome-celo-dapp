@@ -36,6 +36,8 @@ export default function ProfileScreen({ navigation }) {
 		loadingListedNFT,
 		listedNFTs,
 		withdraw,
+		getMyNFTsFromMarketplace,
+		loadingMyNFTs,
 	} = useContext(CreatorContext);
 	const [isMintModalOpen, setIsMintModalOpen] = useState(false);
 
@@ -43,6 +45,7 @@ export default function ProfileScreen({ navigation }) {
 		if (creator) {
 			await getNFTsOwnerByUserUsingSigner();
 			await getNFTsListedByUserUsingSigner();
+			await getMyNFTsFromMarketplace();
 		}
 	}, [creator]);
 

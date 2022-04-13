@@ -107,12 +107,13 @@ export const fetchMyNFTs = async (account) => {
 		let owner = await nftContract.methods
 			.ownerOf(result[i].tokenId.toString())
 			.call();
-		if (owner === currentAddress) {
+		if (owner.toLowerCase() == currentAddress.toLowerCase()) {
 			let nft = {};
 
 			let tokenURI = await nftContract.methods
 				.tokenURI(result[i].tokenId.toString())
 				.call();
+
 			let response = await axios.get(tokenURI);
 			const { name, description, image } = response.data;
 
@@ -120,10 +121,9 @@ export const fetchMyNFTs = async (account) => {
 				Creators.abi,
 				CREATORS_CONTRACT_ADDRESS
 			);
-			let creatorAddress =
-				await creatorsContract.methods.getCreatorAddressByAddress(
-					result[i].seller
-				);
+			let creatorAddress = await creatorsContract.methods
+				.getCreatorAddressByAddress(result[i].seller)
+				.call();
 			let creatorContract = new web3.eth.Contract(
 				Creator.abi,
 				creatorAddress
@@ -135,6 +135,9 @@ export const fetchMyNFTs = async (account) => {
 				.profilePicUrl()
 				.call();
 
+			let sellerProfilePicUrl = (await axios.get(sellerProfilePic)).data
+				.image;
+
 			nft.collectionAddress = result[i].nftContract;
 			nft.seller = result[i].seller;
 			nft.price = result[i].price;
@@ -142,14 +145,78 @@ export const fetchMyNFTs = async (account) => {
 			nft.owner = owner;
 			nft.name = name;
 			nft.description = description;
-			nft.image = imageUrl;
+			nft.image = image;
 			nft.creatorAddress = creatorAddress;
 
 			nft.creator = {};
 			nft.creator.name = sellerName;
-			nft.creator.profilePicUrl = sellerProfilePic;
+			nft.creator.profilePicUrl = sellerProfilePicUrl;
+
+			console.log(nft.name);
+
 			nfts.push(nft);
 		}
+	}
+
+	return nfts;
+};
+
+export const fetchListedItems = async (account) => {
+	const currentAddress = account;
+	let nftMarketContract = new web3.eth.Contract(
+		NFTMarket.abi,
+		MARKETPLACE_CONTRACT_ADDRESS
+	);
+
+	let result = await nftMarketContract.fetchListedItems(currentAddress);
+	let nfts = [];
+
+	for (let i = 0; i < result.length; i++) {
+		let nftContract = new web3.eth.Contract(NFT.abi, result[i].nftContract);
+		let owner = await nftContract
+			.ownerOf(result[i].tokenId.toString())
+			.call();
+		let nft = {};
+
+		let tokenURI = await nftContract
+			.tokenURI(result[i].tokenId.toString())
+			.call();
+		let response = await axios.get(tokenURI);
+		const { name, description, image } = response.data;
+
+		let imageUrl = image;
+		const creatorsContract = new web3.eth.Contract(
+			Creators.abi,
+			CREATORS_CONTRACT_ADDRESS
+		);
+		let creatorAddress = await creatorsContract
+			.getCreatorAddressByAddress(result[i].seller)
+			.call();
+		let creatorContract = new web3.eth.Contract(
+			Creator.abi,
+			creatorAddress
+		);
+		let sellerName = await creatorContract.name().call();
+		let sellerProfilePic = await creatorContract.profilePicUrl().call();
+
+		let sellerProfilePicUrl = (await axios.get(sellerProfilePic)).data
+			.image;
+
+		nft.collectionAddress = result[i].nftContract;
+		nft.seller = result[i].seller;
+		nft.price = ethers.utils.formatEther(result[i].price);
+		nft.tokenId = result[i].tokenId.toString();
+		nft.owner = owner;
+		nft.name = name;
+		nft.description = description;
+		nft.image = imageUrl;
+		nft.creatorAddress = creatorAddress;
+
+		nft.creator = {};
+		nft.creator.name = sellerName;
+		nft.creator.profilePicUrl = sellerProfilePicUrl;
+
+		nfts.push(nft);
 	}
 
 	return nfts;
@@ -198,6 +265,9 @@ export const fetchItemsCreated = async (account) => {
 				.profilePicUrl()
 				.call();
 
+			let sellerProfilePicUrl = (await axios.get(sellerProfilePic)).data
+				.image;
+
 			nft.collectionAddress = result[i].nftContract;
 			nft.seller = result[i].seller;
 			nft.itemId = result[i].itemId;
@@ -210,7 +280,7 @@ export const fetchItemsCreated = async (account) => {
 			nft.creatorAddress = creatorAddress;
 			nft.creator = {};
 			nft.creator.name = sellerName;
-			nft.creator.profilePicUrl = sellerProfilePic;
+			nft.creator.profilePicUrl = sellerProfilePicUrl;
 			nfts.push(nft);
 		}
 	}
@@ -218,19 +288,25 @@ export const fetchItemsCreated = async (account) => {
 	return nfts;
 };
 
-export const createSale = async () => {
+export const createSale = async (
+	connector,
+	collectionAddress,
+	tokenId,
+	price
+) => {
 	let nftMarketContract = new web3.eth.Contract(
 		NFTMarket.abi,
 		MARKETPLACE_CONTRACT_ADDRESS
 	);
 
 	let txObject = nftMarketContract.methods
-		.createMarketSale(collectionAddress, tokenId, { value: price })
+		.createMarketSale(collectionAddress, tokenId)
 		.encodeABI();
 
 	await connector.sendTransaction({
 		from: connector.accounts[0],
 		to: MARKETPLACE_CONTRACT_ADDRESS,
 		data: txObject.toString(),
+		value: web3.utils.toWei(price.toString()),
 	});
 };

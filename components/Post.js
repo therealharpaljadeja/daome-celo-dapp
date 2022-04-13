@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { AccountContext } from "../context/AccountContext";
+import { CreatorContext } from "../context/CreatorContext";
 
 const styles = StyleSheet.create({
 	rowFlex: tw`flex-row`,
@@ -23,6 +24,7 @@ const styles = StyleSheet.create({
 export default function Post({ nft }) {
 	const window = useWindowDimensions();
 	const { account } = useContext(AccountContext);
+	const { buyNFT } = useContext(CreatorContext);
 	const {
 		name,
 		owner,
@@ -34,12 +36,17 @@ export default function Post({ nft }) {
 		tokenId,
 		price,
 	} = nft;
-	console.log(creator.profilePicUrl);
+
 	const _handlePressButtonAsync = async () => {
 		let url = `https://alfajores-blockscout.celo-testnet.org/token/${collectionAddress}/instance/${tokenId}/token-transfers`;
 		console.log(url);
 		let result = await WebBrowser.openBrowserAsync(url);
 	};
+
+	async function createBuyOrder() {
+		await buyNFT(collectionAddress, tokenId, price);
+	}
+
 	return (
 		<View>
 			<View
@@ -79,7 +86,9 @@ export default function Post({ nft }) {
 			</View>
 			<View style={tw`justify-center px-2 bg-white flex-row `}>
 				{account == seller.toLowerCase() ? null : (
-					<TouchableOpacity style={styles.button}>
+					<TouchableOpacity
+						onPress={createBuyOrder}
+						style={styles.button}>
 						<Text style={styles.buttonText}>Buy</Text>
 					</TouchableOpacity>
 				)}

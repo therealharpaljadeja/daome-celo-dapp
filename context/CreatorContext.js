@@ -11,7 +11,9 @@ import {
 import { CreatorsContext } from "./CreatorsContext";
 import {
 	createMarketItem,
+	createSale,
 	fetchItemsCreated,
+	fetchMarketItems,
 	fetchMyNFTs,
 } from "../utils/NFTMarket";
 import { updateCreator } from "../utils/Creator";
@@ -26,6 +28,7 @@ export default function CreatorContextProvider({ children }) {
 	const [currentUserNFTs, setCurrentUserNFTs] = useState([]);
 	const [listedNFTs, setListedNFTs] = useState([]);
 	const [approvingNFT, setApprovingNFT] = useState(false);
+	const [loadingMyNFTs, setLoadingMyNFTs] = useState(false);
 
 	async function mintNFTUsingContext(tokenURI, royaltyPercentage) {
 		await mintNFT(connector, creatorAddress, tokenURI, royaltyPercentage);
@@ -41,9 +44,16 @@ export default function CreatorContextProvider({ children }) {
 
 	async function getNFTsListedByUserUsingSigner() {
 		setLoadingListedNFT(true);
-		let result = await fetchItemsCreated(account);
+		let result = await fetchMarketItems(account);
 		setListedNFTs(result);
 		setLoadingListedNFT(false);
+	}
+
+	async function getMyNFTsFromMarketplace() {
+		setLoadingMyNFTs(true);
+		let result = await fetchMyNFTs(account);
+		setCurrentUserNFTs([...currentUserNFTs, ...result]);
+		setLoadingMyNFTs(false);
 	}
 
 	async function approveNFTToMarketplace(collectionAddress, tokenId) {
@@ -74,6 +84,10 @@ export default function CreatorContextProvider({ children }) {
 		await updateCreator(connector, creatorAddress, creatorObj);
 	}
 
+	async function buyNFT(collectionAddress, tokenId, price) {
+		await createSale(connector, collectionAddress, tokenId, price);
+	}
+
 	return (
 		<CreatorContext.Provider
 			value={{
@@ -82,13 +96,16 @@ export default function CreatorContextProvider({ children }) {
 				listedNFTs,
 				getNFTsOwnerByUserUsingSigner,
 				getNFTsListedByUserUsingSigner,
+				getMyNFTsFromMarketplace,
 				approveNFTToMarketplace,
 				isNFTApproved,
 				listItemForSale,
 				loadingListedNFT,
 				loadingOwnedNFT,
+				loadingMyNFTs,
 				withdraw,
 				updateCreatorObj,
+				buyNFT,
 			}}>
 			{children}
 		</CreatorContext.Provider>
