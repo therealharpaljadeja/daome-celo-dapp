@@ -18,6 +18,10 @@ contract NFT is ERC721Enumerable, Ownable {
         ERC721(collectionName, collectionSymbol)
     {}
 
+    /// @notice create nft
+    /// @param _tokenURI a uri where the metadata of the token is hosted. (preferrably ipfs)
+    /// @param royaltyPercentage percentage of royalty expected.
+    /// @return uint256 the tokenId of the newly minted nft.
     function createToken(string memory _tokenURI, uint256 royaltyPercentage)
         public
         returns (uint256)
@@ -32,6 +36,9 @@ contract NFT is ERC721Enumerable, Ownable {
         return newItemId;
     }
 
+    /// @notice get tokenURI of the nft using its tokenId.
+    /// @param tokenId tokenId of the nft for which tokenURI is required.
+    /// @return string tokenURI of the nft.
     function tokenURI(uint256 tokenId)
         public
         view
@@ -50,6 +57,10 @@ contract NFT is ERC721Enumerable, Ownable {
         return ERC721Enumerable.supportsInterface(interfaceId);
     }
 
+    /// @notice check if the spender(marketplace in my case) is allowed to spend the tokenId
+    /// @param spender in this case it will usually be marketplace however can be checked for any address.
+    /// @param tokenId tokenId for which the allowance needs to be checked.
+    /// @return bool true or false based on whether the token is allowed to the spender or not.
     function isApprovedToMarketplace(address spender, uint256 tokenId)
         public
         view
@@ -58,10 +69,14 @@ contract NFT is ERC721Enumerable, Ownable {
         return _isApprovedOrOwner(spender, tokenId);
     }
 
+    /// @notice withdraw royalty amount accumulated in this contract.
     function withdraw() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
     }
 
+    /// @notice get royalty percentage set on the specified tokenId.
+    /// @param tokenId tokenId for which the royalty percentage is expected.
+    /// @return uint256 royalty percentage.
     function getRoyaltyPercentage(uint256 tokenId)
         external
         view
@@ -70,6 +85,9 @@ contract NFT is ERC721Enumerable, Ownable {
         return _royalties[tokenId];
     }
 
+    /// @notice get the address who receives the royalty for the specified token id.
+    /// @param tokenId token id of the nft.
+    /// @return address address that receives the royalty for the given token id.
     function getRoyaltyReceiver(uint256 tokenId)
         external
         view

@@ -64,12 +64,18 @@ contract NFTMarket is ReentrancyGuard {
         uint256 price
     );
 
+    /// @notice create a listing on the market
+    /// @param nftContract contract address of the nft being listed.
+    /// @param tokenId token id of the nft being listed.
+    /// @param price price at which nft to be listed.
     function createMarketItem(
         address payable nftContract,
         uint256 tokenId,
         uint256 price
     ) public payable nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
+
+        /// take listing fee at the time of listing.
         require(
             msg.value == listingPrice,
             "Price must be equal to listing price"
@@ -107,6 +113,9 @@ contract NFTMarket is ReentrancyGuard {
         );
     }
 
+    /// @notice create buy order on the market.
+    /// @param nftContract contract address of the nft to buy.
+    /// @param itemId id of the nft to buy.
     function createMarketSale(address nftContract, uint256 itemId)
         public
         payable
@@ -142,6 +151,8 @@ contract NFTMarket is ReentrancyGuard {
         );
     }
 
+    /// @notice fetch items listed on the marketplace.
+    /// @return items all the items listed on the marketplace which onSale as true.
     function fetchMarketItems() public view returns (MarketItem[] memory) {
         uint256 itemCount = _itemIds.current();
         uint256 unsoldItemCount = _itemIds.current() - _itemsSold.current();
@@ -159,6 +170,9 @@ contract NFTMarket is ReentrancyGuard {
         return items;
     }
 
+    /// @notice returns market items listed (sale active) by sender.
+    /// @param sender address for which the listed items are requested.
+    /// @return listedItems items with sale active listed by sender.
     function fetchListedItems(address sender)
         external
         view
@@ -193,6 +207,9 @@ contract NFTMarket is ReentrancyGuard {
         return items;
     }
 
+    /// @notice returns nfts bought by sender from other user via the marketplace.
+    /// @param sender sender for which the nfts are requested.
+    /// @return nftsBought nfts bought via the marketplace.
     function fetchMyNFTs(address sender)
         public
         view
@@ -224,6 +241,9 @@ contract NFTMarket is ReentrancyGuard {
         return items;
     }
 
+    /// @notice all items created by the sender (active or inactive sale).
+    /// @param sender address for which the items are requested.
+    /// @return itemsCreated all orders ever created on the marketplace.
     function fetchItemsCreated(address sender)
         public
         view
@@ -251,12 +271,4 @@ contract NFTMarket is ReentrancyGuard {
 
         return items;
     }
-
-    // function getMarketItemById(uint256 itemId)
-    //     external
-    //     view
-    //     returns (MarketItem memory)
-    // {
-    //     return idToMarketItem[itemId];
-    // }
 }

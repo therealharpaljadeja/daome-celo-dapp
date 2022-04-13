@@ -4,6 +4,8 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./NFT.sol";
 
+/// @author Harpalsinh Jadeja. (@harpaljadeja11)
+/// @title Creator contract represents individual creator.
 contract Creator is Ownable {
     string public username;
     string public name;
@@ -34,19 +36,17 @@ contract Creator is Ownable {
         nftCollectionAddress = address(nftCollection);
     }
 
+    /// @notice Update the creator's details
+    /// @param _name new name of the creator.
+    /// @param _bio new bio of the creator.
+    /// @param _profilePicUrl new profile picture of the creator.
     function updateCreator(
-        string memory _username,
         string memory _name,
         string memory _bio,
-        string memory _profilePicUrl,
-        string memory _nftCollectionName,
-        string memory _nftCollectionSymbol
+        string memory _profilePicUrl
     ) external {
         name = _name;
-        username = _username;
         bio = _bio;
         profilePicUrl = _profilePicUrl;
-        nftCollectionName = _nftCollectionName;
-        nftCollectionSymbol = _nftCollectionSymbol;
     }
 }
