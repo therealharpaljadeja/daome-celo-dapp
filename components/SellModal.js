@@ -1,4 +1,3 @@
-import { useContext, useState } from "react";
 import {
 	Modal,
 	View,
@@ -10,7 +9,6 @@ import {
 } from "react-native";
 import tw from "twrnc";
 import AntIcon from "react-native-vector-icons/AntDesign";
-import { CreatorContext } from "../context/CreatorContext";
 
 const styles = StyleSheet.create({
 	textInput: tw`text-4xl my-1 px-2 py-1 self-center`,

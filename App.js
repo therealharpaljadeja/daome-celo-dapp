@@ -13,13 +13,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import Icon from "react-native-vector-icons/AntDesign";
 import FeedScreen from "./screens/Feed";
-import ProfileScreen from "./screens/Profile";
 import SettingsScreen from "./screens/Settings";
-import Post from "./screens/Post";
 import ProfilePostNavigator from "./screens/ProfilePostNavigator";
 
 const BottomTabs = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
 export default function App() {
 	const { account } = useContext(AccountContext);

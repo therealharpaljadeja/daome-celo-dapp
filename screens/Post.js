@@ -40,7 +40,6 @@ export default function Post({ navigation, route }) {
 	const [creatorObj, setCreatorObj] = useState(null);
 	const [loadingCreator, setLoadingCreator] = useState(false);
 	const [isSellNFTModalOpen, setIsSellNFTModalOpen] = useState(false);
-	const { account } = useContext(AccountContext);
 	const {
 		approveNFTToMarketplace,
 		approvingNFT,

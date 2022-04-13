@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Post from "../components/Post";
 import { fetchMarketItems } from "../utils/NFTMarket";
-import { FlatList, View, RefreshControl, ScrollView } from "react-native";
+import { FlatList, RefreshControl, ScrollView } from "react-native";
 
 export default function FeedScreen() {
 	const [items, setItems] = useState([]);

@@ -8,7 +8,7 @@ import {
 	ActivityIndicator,
 	TouchableOpacity,
 } from "react-native";
-export default function ImageList({ navigation, loadingNFT, currentUserNFTs }) {
+export default function ImageList({ navigation, currentUserNFTs }) {
 	const window = useWindowDimensions();
 	return (
 		<FlatList

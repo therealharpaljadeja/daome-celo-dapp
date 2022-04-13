@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MARKETPLACE_CONTRACT_ADDRESS } from "@env";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 

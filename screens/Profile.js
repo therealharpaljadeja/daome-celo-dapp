@@ -135,7 +135,9 @@ export default function ProfileScreen({ navigation }) {
 							<ScrollView
 								refreshControl={
 									<RefreshControl
-										refreshing={loadingOwnedNFT}
+										refreshing={
+											loadingOwnedNFT && loadingMyNFTs
+										}
 										onRefresh={async () =>
 											await getNFTsOwnerByUserUsingSigner()
 										}

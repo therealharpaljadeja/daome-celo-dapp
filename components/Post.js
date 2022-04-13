@@ -27,7 +27,6 @@ export default function Post({ nft }) {
 	const { buyNFT } = useContext(CreatorContext);
 	const {
 		name,
-		owner,
 		creator,
 		seller,
 		image,

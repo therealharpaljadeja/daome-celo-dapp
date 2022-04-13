@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { AccountContext } from "./AccountContext";
-import { getCreatorAddressByAddress } from "../utils/Creators";
 import {
 	approveToMarketplace,
 	isApprovedToMarketplace,
@@ -12,7 +11,6 @@ import { CreatorsContext } from "./CreatorsContext";
 import {
 	createMarketItem,
 	createSale,
-	fetchItemsCreated,
 	fetchMarketItems,
 	fetchMyNFTs,
 } from "../utils/NFTMarket";
