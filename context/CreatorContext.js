@@ -11,6 +11,7 @@ import { CreatorsContext } from "./CreatorsContext";
 import {
 	createMarketItem,
 	createSale,
+	fetchListedItems,
 	fetchMarketItems,
 	fetchMyNFTs,
 } from "../utils/NFTMarket";
@@ -36,22 +37,16 @@ export default function CreatorContextProvider({ children }) {
 	async function getNFTsOwnerByUserUsingSigner() {
 		setLoadingOwnedNFT(true);
 		let result = await tokenOwnedByUser(account, creatorAddress);
-		setCurrentUserNFTs(result);
+		let result2 = await fetchMyNFTs(account);
+		setCurrentUserNFTs([...result, ...result2]);
 		setLoadingOwnedNFT(false);
 	}
 
 	async function getNFTsListedByUserUsingSigner() {
 		setLoadingListedNFT(true);
-		let result = await fetchMarketItems(account);
+		let result = await fetchListedItems(account);
 		setListedNFTs(result);
 		setLoadingListedNFT(false);
-	}
-
-	async function getMyNFTsFromMarketplace() {
-		setLoadingMyNFTs(true);
-		let result = await fetchMyNFTs(account);
-		setCurrentUserNFTs([...currentUserNFTs, ...result]);
-		setLoadingMyNFTs(false);
 	}
 
 	async function approveNFTToMarketplace(collectionAddress, tokenId) {
@@ -94,13 +89,11 @@ export default function CreatorContextProvider({ children }) {
 				listedNFTs,
 				getNFTsOwnerByUserUsingSigner,
 				getNFTsListedByUserUsingSigner,
-				getMyNFTsFromMarketplace,
 				approveNFTToMarketplace,
 				isNFTApproved,
 				listItemForSale,
 				loadingListedNFT,
 				loadingOwnedNFT,
-				loadingMyNFTs,
 				withdraw,
 				updateCreatorObj,
 				buyNFT,

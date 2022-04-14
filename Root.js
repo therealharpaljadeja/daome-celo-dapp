@@ -8,6 +8,7 @@ import { useEffect } from "react";
 export default function Root() {
 	useEffect(() => {
 		LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+		LogBox.ignoreAllLogs();
 	}, []);
 
 	return (

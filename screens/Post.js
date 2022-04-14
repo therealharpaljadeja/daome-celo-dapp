@@ -46,6 +46,7 @@ export default function Post({ navigation, route }) {
 		isNFTApproved,
 		listItemForSale,
 	} = useContext(CreatorContext);
+
 	const [isApproved, setIsApproved] = useState(false);
 	const [price, setPrice] = useState("");
 	const [creatingMarketItem, setCreatingMarketItem] = useState(false);
@@ -87,7 +88,7 @@ export default function Post({ navigation, route }) {
 		<ScrollView
 			refreshControl={
 				<RefreshControl
-					refreshing={checkingApproved}
+					refreshing={checkingApproved && loadingCreator}
 					colors={["darkorchid"]}
 					onRefresh={async () => await checkIfNFTApproved()}
 				/>
