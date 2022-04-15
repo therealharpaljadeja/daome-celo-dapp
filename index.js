@@ -20,5 +20,9 @@ registerRootComponent(
 		storageOptions: {
 			asyncStorage: AsyncStorage,
 		},
+		clientMeta: {
+			name: "DAOMe",
+			description: "DAOMe is a creator economy app built on Celo",
+		},
 	})
 );
