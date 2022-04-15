@@ -64,11 +64,6 @@ export default function ProfileScreen({ navigation }) {
 						colors={["darkorchid"]}
 					/>
 				}>
-				{/* <View
-				style={{
-					justifyContent: "center",
-					position: "relative",
-				}}> */}
 				<Image
 					style={{
 						position: "absolute",
@@ -129,7 +124,6 @@ export default function ProfileScreen({ navigation }) {
 						</Text>
 					</TouchableOpacity>
 				</View>
-				{/* </View> */}
 			</ScrollView>
 			<View style={tw`flex-1`}>
 				<Tab.Navigator
