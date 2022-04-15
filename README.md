@@ -12,6 +12,9 @@
     <a href="https://github.com/therealharpaljadeja/daome-celo-dapp/issues">Report Bug</a>
     ·
     <a href="https://github.com/therealharpaljadeja/daome-celo-dapp/issues">Request Feature</a>
+    <br />
+    <br />
+    Android 11 requires additional configuration in AndroidManifest.xml more about it <a href="https://reactnative.dev/docs/linking">here</a>
   </p>
 </div>
 
