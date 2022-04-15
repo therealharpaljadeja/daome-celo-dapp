@@ -12,24 +12,10 @@ export const getNFTCollectionAddress = async (creatorAddress) => {
 export const updateCreator = async (connector, creatorAddress, creatorObj) => {
 	const creatorContract = new web3.eth.Contract(Creator.abi, creatorAddress);
 
-	let {
-		name,
-		bio,
-		username,
-		profilePicUrl,
-		nftCollectionName,
-		nftCollectionSymbol,
-	} = creatorObj;
+	let { name, bio, profilePicUrl } = creatorObj;
 
 	let txData = await creatorContract.methods
-		.updateCreator(
-			username,
-			name,
-			bio,
-			profilePicUrl,
-			nftCollectionName,
-			nftCollectionSymbol
-		)
+		.updateCreator(name, bio, profilePicUrl)
 		.encodeABI();
 
 	await connector.sendTransaction({

@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
 });
 
 export default function ProfileScreen({ navigation }) {
-	const { creator } = useContext(CreatorsContext);
+	const { creator, getCreatorObj, loadingCreator } =
+		useContext(CreatorsContext);
 	const {
 		getNFTsOwnerByUserUsingSigner,
 		getNFTsListedByUserUsingSigner,
@@ -52,12 +53,22 @@ export default function ProfileScreen({ navigation }) {
 				isMintModalOpen={isMintModalOpen}
 				setIsMintModalOpen={setIsMintModalOpen}
 			/>
-			<View
+			<ScrollView
+				style={{
+					marginBottom: -380,
+				}}
+				refreshControl={
+					<RefreshControl
+						refreshing={loadingCreator}
+						onRefresh={async () => await getCreatorObj()}
+						colors={["darkorchid"]}
+					/>
+				}>
+				{/* <View
 				style={{
 					justifyContent: "center",
 					position: "relative",
-					marginBottom: 10,
-				}}>
+				}}> */}
 				<Image
 					style={{
 						position: "absolute",
@@ -99,7 +110,10 @@ export default function ProfileScreen({ navigation }) {
 					</View>
 				</View>
 				<View
-					style={{ flexDirection: "row", justifyContent: "center" }}>
+					style={{
+						flexDirection: "row",
+						justifyContent: "center",
+					}}>
 					<TouchableOpacity
 						onPress={() => setIsMintModalOpen(true)}
 						style={tw.style(styles.touchableOpacity, "mt-3 mx-2")}>
@@ -115,7 +129,8 @@ export default function ProfileScreen({ navigation }) {
 						</Text>
 					</TouchableOpacity>
 				</View>
-			</View>
+				{/* </View> */}
+			</ScrollView>
 			<View style={tw`flex-1`}>
 				<Tab.Navigator
 					style={tw`bg-red-500`}

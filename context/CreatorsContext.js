@@ -16,7 +16,7 @@ export default function CreatorsContextProvider({ children }) {
 	const { connector, account } = useContext(AccountContext);
 	const { userRegistered } = useContext(UserContext);
 
-	useEffect(async () => {
+	async function getCreatorObj() {
 		if (userRegistered) {
 			setLoadingCreator(true);
 			let creatorAddress = await getCreatorAddressByAddress(account);
@@ -24,6 +24,10 @@ export default function CreatorsContextProvider({ children }) {
 			setCreator(await getCreatorObjFromAddress(creatorAddress));
 			setLoadingCreator(false);
 		}
+	}
+
+	useEffect(async () => {
+		await getCreatorObj();
 	}, [userRegistered]);
 
 	const registerUser = async (creatorObj) => {
@@ -37,6 +41,7 @@ export default function CreatorsContextProvider({ children }) {
 				creator,
 				creatorAddress,
 				loadingCreator,
+				getCreatorObj,
 			}}>
 			{children}
 		</CreatorsContext.Provider>

@@ -152,7 +152,13 @@ export function SettingsForm() {
 				placeholder='NFT Collection Symbol'
 			/>
 			<TouchableOpacity
-				onPress={() => updateCreatorObj(state)}
+				onPress={() =>
+					updateCreatorObj({
+						name: state.name,
+						bio: state.bio,
+						profilePicUrl: state.profilePicUrl,
+					})
+				}
 				style={styles.button}>
 				<Text
 					style={{
