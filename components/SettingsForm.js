@@ -12,6 +12,10 @@ import { useContext, useReducer } from "react";
 import { CreatorsContext } from "../context/CreatorsContext";
 import openImagePickerAsync from "../utils/imagePicker";
 import { CreatorContext } from "../context/CreatorContext";
+import { PINATA_API_KEY, PINATA_API_SECRET } from "@env";
+import pinataSDK from "@pinata/sdk";
+
+const pinata = pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
 
 const styles = StyleSheet.create({
 	textInput: tw`border-gray-200 border-2 rounded-md my-1 px-2`,
