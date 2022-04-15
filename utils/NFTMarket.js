@@ -216,8 +216,6 @@ export const fetchListedItems = async (account) => {
 		nft.image = imageUrl;
 		nft.creatorAddress = creatorAddress;
 
-		console.log("seller", result[i].seller);
-
 		nft.creator = {};
 		nft.creator.name = sellerName;
 		nft.creator.profilePicUrl = sellerProfilePicUrl;
