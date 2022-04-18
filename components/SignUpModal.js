@@ -16,6 +16,7 @@ import { CreatorsContext } from "../context/CreatorsContext";
 import openImagePickerAsync from "../utils/imagePicker";
 import { PINATA_API_KEY, PINATA_API_SECRET } from "@env";
 import pinataSDK from "@pinata/sdk";
+import { UserContext } from "../context/UserContext";
 
 const pinata = pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
 
@@ -66,6 +67,8 @@ export default function SignUpModal() {
 	const [state, dispatch] = useReducer(registerReducer, initialState);
 	const { account } = useContext(AccountContext);
 	const { registerUser } = useContext(CreatorsContext);
+	const { checkIfUserRegistered, setUserRegistered } =
+		useContext(UserContext);
 	const [registeringUser, setRegisteringUser] = useState(null);
 
 	const [modalOpen, setModalOpen] = useState(true);
@@ -90,6 +93,8 @@ export default function SignUpModal() {
 			nftCollectionSymbol: state.nftCollectionSymbol,
 		};
 		await registerUser(creatorObj);
+		let result = await checkIfUserRegistered();
+		setUserRegistered(result);
 		setRegisteringUser(false);
 	}
 

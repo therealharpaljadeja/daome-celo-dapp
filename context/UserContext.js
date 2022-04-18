@@ -38,6 +38,7 @@ export default function UserContextProvider({ children }) {
 				checkIfUserRegistered,
 				userRegistered,
 				checkingIfUserRegistered,
+				setUserRegistered,
 			}}>
 			{children}
 		</UserContext.Provider>
