@@ -134,8 +134,6 @@ Don't forget to give the project a star! Thanks again!
 
 Harpalsinh Jadeja - [@harpaljadeja11](https://twitter.com/harpaljadeja11) - jadejaharpal14@gmail.com
 
-Project Link: [https://github.com/therealharpaljadeja/daome-celo-dapp](https://github.com/therealharpaljadeja/daome-celo-dapp)
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- Achivements --->
